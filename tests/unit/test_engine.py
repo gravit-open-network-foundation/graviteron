@@ -69,8 +69,9 @@ def test_engine_adversarial_scaling():
     engine = GraviteronEngine(adversarial_threshold=0.8)
     
     # Adversarial robustness is 0.4 (below 0.8), so multiplier is 0.4 / 0.8 = 0.5
-    # Average of [0.8]*6 = 0.8. Multiplied by 0.5 = 0.4
-    tensor = TrustTensor(0.8, 0.8, 0.4, 0.8, 0.8, 0.8)
+    # Average of five 0.88 components and one 0.4 component: (0.88*5 + 0.4)/6 = 0.8
+    # Multiplied by 0.5 = 0.4
+    tensor = TrustTensor(0.88, 0.88, 0.4, 0.88, 0.88, 0.88)
     score = engine.compute(tensor)
     assert pytest.approx(score) == 0.4
 

@@ -2,7 +2,7 @@ import os
 import time
 import logging
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, Optional
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -43,7 +43,7 @@ app.add_middleware(
 )
 
 # Statistics tracker
-start_time = datetime.utcnow()
+start_time = datetime.now(timezone.utc)
 requests_processed = 0
 
 # --- Middleware for metrics and request logging ---
@@ -116,7 +116,7 @@ async def root():
 
 @app.get("/health")
 async def health():
-    uptime = (datetime.utcnow() - start_time).total_seconds()
+    uptime = (datetime.now(timezone.utc) - start_time).total_seconds()
     return {
         "status": "healthy",
         "uptime_seconds": uptime,
