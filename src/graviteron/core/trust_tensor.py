@@ -1,5 +1,7 @@
+from typing import Any, Dict
+
 import numpy as np
-from typing import Dict, Any, List
+
 
 class TrustTensor:
     """6-dimensional Trust Tensor for Graviteron trust computation"""
@@ -11,7 +13,7 @@ class TrustTensor:
         adversarial_robustness: float,
         factual_grounding: float,
         reasoning_soundness: float,
-        recovery_score: float
+        recovery_score: float,
     ):
         self.consistency = float(consistency)
         self.stability = float(stability)
@@ -22,16 +24,19 @@ class TrustTensor:
 
     def to_array(self) -> np.ndarray:
         """Convert components to a numpy array for mathematical vector operations"""
-        return np.array([
-            self.consistency,
-            self.stability,
-            self.adversarial_robustness,
-            self.factual_grounding,
-            self.reasoning_soundness,
-            self.recovery_score
-        ], dtype=float)
+        return np.array(
+            [
+                self.consistency,
+                self.stability,
+                self.adversarial_robustness,
+                self.factual_grounding,
+                self.reasoning_soundness,
+                self.recovery_score,
+            ],
+            dtype=float,
+        )
 
-    def normalize(self) -> 'TrustTensor':
+    def normalize(self) -> "TrustTensor":
         """Normalize all components strictly to [0.0, 1.0] bound limits"""
         return TrustTensor(
             consistency=max(0.0, min(1.0, self.consistency)),
@@ -39,7 +44,7 @@ class TrustTensor:
             adversarial_robustness=max(0.0, min(1.0, self.adversarial_robustness)),
             factual_grounding=max(0.0, min(1.0, self.factual_grounding)),
             reasoning_soundness=max(0.0, min(1.0, self.reasoning_soundness)),
-            recovery_score=max(0.0, min(1.0, self.recovery_score))
+            recovery_score=max(0.0, min(1.0, self.recovery_score)),
         )
 
     def to_dict(self) -> Dict[str, float]:
@@ -50,11 +55,11 @@ class TrustTensor:
             "adversarial_robustness": self.adversarial_robustness,
             "factual_grounding": self.factual_grounding,
             "reasoning_soundness": self.reasoning_soundness,
-            "recovery_score": self.recovery_score
+            "recovery_score": self.recovery_score,
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'TrustTensor':
+    def from_dict(cls, data: Dict[str, Any]) -> "TrustTensor":
         """Instantiate a TrustTensor from a dictionary representation"""
         return cls(
             consistency=data.get("consistency", 0.0),
@@ -62,7 +67,7 @@ class TrustTensor:
             adversarial_robustness=data.get("adversarial_robustness", 0.0),
             factual_grounding=data.get("factual_grounding", 0.0),
             reasoning_soundness=data.get("reasoning_soundness", 0.0),
-            recovery_score=data.get("recovery_score", 0.0)
+            recovery_score=data.get("recovery_score", 0.0),
         )
 
     def __repr__(self) -> str:

@@ -1,10 +1,13 @@
-import numpy as np
 import hashlib
 import json
-from typing import Dict, Any, Optional, Tuple
-from .trust_tensor import TrustTensor
+from typing import Any, Dict, Optional, Tuple
+
+import numpy as np
+
 from .omega_trace import OmegaTrace
 from .redis_store import RedisTraceStore
+from .trust_tensor import TrustTensor
+
 
 class GraviteronEngine:
     """Core mathematical engine that computes Graviteron scores from Trust Tensors"""
@@ -14,7 +17,7 @@ class GraviteronEngine:
         weights: Optional[np.ndarray] = None,
         adversarial_threshold: float = 0.7,
         redis_url: Optional[str] = None,
-        store: Optional[RedisTraceStore] = None
+        store: Optional[RedisTraceStore] = None,
     ):
         if weights is not None:
             self.weights = np.array(weights, dtype=float)
@@ -52,25 +55,17 @@ class GraviteronEngine:
         return max(0.0, min(1.0, final_score))
 
     def compute_with_trace(
-        self,
-        tensor: TrustTensor,
-        input_data: Any,
-        context: Optional[Dict[str, Any]] = None
+        self, tensor: TrustTensor, input_data: Any, context: Optional[Dict[str, Any]] = None
     ) -> Tuple[float, OmegaTrace]:
         """Compute the Graviteron score and write the resulting OmegaTrace to the store"""
         score = self.compute(tensor)
         input_hash = self._hash_input(input_data)
-        
-        trace = OmegaTrace(
-            score=score,
-            tensor=tensor,
-            input_hash=input_hash,
-            metadata=context or {}
-        )
-        
+
+        trace = OmegaTrace(score=score, tensor=tensor, input_hash=input_hash, metadata=context or {})
+
         # Save trace to store
         self.store.put(trace)
-        
+
         return score, trace
 
     def get_trace(self, trace_id: str) -> Optional[OmegaTrace]:
@@ -88,5 +83,5 @@ class GraviteronEngine:
                 data_bytes = data_str.encode("utf-8")
             except Exception:
                 data_bytes = str(input_data).encode("utf-8")
-        
+
         return hashlib.sha256(data_bytes).hexdigest()

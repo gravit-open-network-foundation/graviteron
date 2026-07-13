@@ -1,12 +1,14 @@
-import os
 import json
-import urllib.request
+import os
 import urllib.error
+import urllib.request
+
 from graviteron import GraviteronEngine, TrustTensor
+
 
 def run_local_demo():
     print("--- 1. Local Graviteron Scoring Engine Demo ---")
-    
+
     # Initialize engine
     engine = GraviteronEngine()
 
@@ -17,17 +19,14 @@ def run_local_demo():
         adversarial_robustness=0.92,
         factual_grounding=0.97,
         reasoning_soundness=0.90,
-        recovery_score=0.85
+        recovery_score=0.85,
     )
 
     # Compute Graviteron score and write immutable trajectory
     score, trace = engine.compute_with_trace(
         tensor=tensor,
         input_data="Verify model decision validation process.",
-        context={
-            "agent_id": "core-executor-9",
-            "model_family": "grok-4"
-        }
+        context={"agent_id": "core-executor-9", "model_family": "grok-4"},
     )
 
     print(f"Computed local score : {score:.4f} Graviteron")
@@ -39,20 +38,20 @@ def run_local_demo():
 def run_api_client_demo():
     print("--- 2. FastAPI Verification API Demo ---")
     api_url = os.environ.get("GRAVITERON_API_URL", "http://localhost:8000")
-    
+
     # Verification query payload
     payload = {
         "output": "The Graviteron measures the epistemic weight of truth.",
         "model": "claude-3-5-sonnet",
-        "context": {"importance": "critical"}
+        "context": {"importance": "critical"},
     }
-    
+
     try:
         req = urllib.request.Request(
             f"{api_url}/verify",
             data=json.dumps(payload).encode("utf-8"),
             headers={"Content-Type": "application/json"},
-            method="POST"
+            method="POST",
         )
         print(f"Sending verify request to {api_url}/verify...")
         with urllib.request.urlopen(req, timeout=3.0) as response:

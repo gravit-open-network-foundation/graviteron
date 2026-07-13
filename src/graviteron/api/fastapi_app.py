@@ -1,22 +1,20 @@
+import logging
 import os
 import time
-import logging
 import uuid
 from datetime import datetime, timezone
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
+
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from ..core.trust_tensor import TrustTensor
-from ..core.omega_trace import OmegaTrace
+
 from ..core.graviteron_engine import GraviteronEngine
 from ..core.redis_store import RedisTraceStore
+from ..core.trust_tensor import TrustTensor
 
 # Setup logger
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - [%(levelname)s] - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - [%(levelname)s] - %(message)s")
 logger = logging.getLogger("graviteron.api")
 
 # Fetch configuration from environments
@@ -30,7 +28,7 @@ engine = GraviteronEngine(adversarial_threshold=ADVERSARIAL_THRESHOLD, store=tra
 app = FastAPI(
     title="Graviteron API",
     description="The Fundamental Unit of Verifiable Trust — Epistemic Trust Validation Service",
-    version="0.1.0"
+    version="0.1.0",
 )
 
 # CORS configuration
@@ -46,27 +44,30 @@ app.add_middleware(
 start_time = datetime.now(timezone.utc)
 requests_processed = 0
 
+
 # --- Middleware for metrics and request logging ---
 @app.middleware("http")
 async def log_and_time_requests(request: Request, call_next):
     global requests_processed
     requests_processed += 1
-    
+
     request_id = str(uuid.uuid4())
     start_ts = time.time()
-    
+
     logger.info(f"[{request_id}] Incoming request: {request.method} {request.url.path}")
-    
+
     response = await call_next(request)
-    
+
     duration = (time.time() - start_ts) * 1000.0
     response.headers["X-Request-ID"] = request_id
     response.headers["X-Processing-Time-Ms"] = f"{duration:.2f}"
-    
+
     logger.info(f"[{request_id}] Completed in {duration:.2f}ms with status {response.status_code}")
     return response
 
+
 # --- Pydantic Data Models ---
+
 
 class TrustTensorInput(BaseModel):
     consistency: float = Field(..., ge=0.0, le=1.0, description="Consistency across contexts")
@@ -76,10 +77,12 @@ class TrustTensorInput(BaseModel):
     reasoning_soundness: float = Field(..., ge=0.0, le=1.0, description="Logical coherence")
     recovery_score: float = Field(..., ge=0.0, le=1.0, description="Recovery potential")
 
+
 class ComputeRequest(BaseModel):
     tensor: TrustTensorInput
     input_data: Any = Field(default="", description="The text, prompt, or structure to hash and verify")
     context: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Metadata and parameters")
+
 
 class ComputeResponse(BaseModel):
     graviteron_score: float
@@ -89,6 +92,7 @@ class ComputeResponse(BaseModel):
     tensor: Dict[str, float]
     processing_time_ms: float
 
+
 class TraceResponse(BaseModel):
     trace_id: str
     timestamp: float
@@ -97,12 +101,15 @@ class TraceResponse(BaseModel):
     input_hash: str
     metadata: Dict[str, Any]
 
+
 class VerifyRequest(BaseModel):
     output: str = Field(..., description="Target string output to check")
     model: str = Field(default="unknown", description="Name of the model generating output")
     context: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Context variables")
 
+
 # --- Routes ---
+
 
 @app.get("/")
 async def root():
@@ -111,8 +118,9 @@ async def root():
         "description": "The Fundamental Unit of Verifiable Trust",
         "version": "0.1.0",
         "status": "operational",
-        "docs_url": "/docs"
+        "docs_url": "/docs",
     }
+
 
 @app.get("/health")
 async def health():
@@ -124,9 +132,10 @@ async def health():
         "engine_ready": True,
         "store": {
             "fallback_active": trace_store.fallback_mode,
-            "cached_traces_count": trace_store.count()
-        }
+            "cached_traces_count": trace_store.count(),
+        },
     }
+
 
 @app.post("/compute", response_model=ComputeResponse, status_code=status.HTTP_201_CREATED)
 async def compute_score(payload: ComputeRequest):
@@ -138,49 +147,44 @@ async def compute_score(payload: ComputeRequest):
             adversarial_robustness=payload.tensor.adversarial_robustness,
             factual_grounding=payload.tensor.factual_grounding,
             reasoning_soundness=payload.tensor.reasoning_soundness,
-            recovery_score=payload.tensor.recovery_score
+            recovery_score=payload.tensor.recovery_score,
         )
-        
-        score, trace = engine.compute_with_trace(
-            tensor=tensor,
-            input_data=payload.input_data,
-            context=payload.context
-        )
-        
+
+        score, trace = engine.compute_with_trace(tensor=tensor, input_data=payload.input_data, context=payload.context)
+
         duration_ms = (time.time() - start_ts) * 1000.0
-        
+
         return ComputeResponse(
             graviteron_score=score,
             omega_trace_id=trace.trace_id,
             timestamp=trace.timestamp,
             input_hash=trace.input_hash,
             tensor=trace.tensor.to_dict(),
-            processing_time_ms=duration_ms
+            processing_time_ms=duration_ms,
         )
     except Exception as e:
         logger.error(f"Computation endpoint failed: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Computation failed: {str(e)}"
+            detail=f"Computation failed: {str(e)}",
         )
+
 
 @app.get("/trace/{trace_id}", response_model=TraceResponse)
 async def get_trace(trace_id: str):
     trace = engine.get_trace(trace_id)
     if not trace:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Trace with ID '{trace_id}' not found."
-        )
-    
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Trace with ID '{trace_id}' not found.")
+
     return TraceResponse(
         trace_id=trace.trace_id,
         timestamp=trace.timestamp,
         score=trace.score,
         tensor=trace.tensor.to_dict() if trace.tensor else None,
         input_hash=trace.input_hash,
-        metadata=trace.metadata
+        metadata=trace.metadata,
     )
+
 
 @app.post("/verify")
 async def verify_output(payload: VerifyRequest):
@@ -191,7 +195,7 @@ async def verify_output(payload: VerifyRequest):
     try:
         # Generate dynamic/simulated metrics based on complexity of text for demonstration
         words_count = len(payload.output.split())
-        
+
         # Simple heuristic to derive tensor components based on output features
         consistency = 0.90 if words_count > 5 else 0.75
         stability = 0.85
@@ -206,17 +210,13 @@ async def verify_output(payload: VerifyRequest):
             adversarial_robustness=adversarial_robustness,
             factual_grounding=factual_grounding,
             reasoning_soundness=reasoning_soundness,
-            recovery_score=recovery_score
+            recovery_score=recovery_score,
         )
 
         score, trace = engine.compute_with_trace(
             tensor=tensor,
             input_data=payload.output,
-            context={
-                "model": payload.model,
-                "interface": "verify_endpoint",
-                **payload.context
-            }
+            context={"model": payload.model, "interface": "verify_endpoint", **payload.context},
         )
 
         return {
@@ -224,11 +224,11 @@ async def verify_output(payload: VerifyRequest):
             "omega_trace_id": trace.trace_id,
             "model": payload.model,
             "timestamp": datetime.fromtimestamp(trace.timestamp).isoformat(),
-            "status": "APPROVED" if score >= 0.8 else "RISK_DETECTED"
+            "status": "APPROVED" if score >= 0.8 else "RISK_DETECTED",
         }
     except Exception as e:
         logger.error(f"Verification endpoint failed: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Verification failed: {str(e)}"
+            detail=f"Verification failed: {str(e)}",
         )

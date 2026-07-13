@@ -1,9 +1,9 @@
-import uuid
 import time
-import hashlib
-import json
-from typing import Dict, Any, Optional
+import uuid
+from typing import Any, Dict, Optional
+
 from .trust_tensor import TrustTensor
+
 
 class OmegaTrace:
     """Immutable trace representation of a Graviteron verification event"""
@@ -15,7 +15,7 @@ class OmegaTrace:
         input_hash: str,
         trace_id: Optional[str] = None,
         timestamp: Optional[float] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ):
         self.trace_id = trace_id or str(uuid.uuid4())
         self.timestamp = timestamp or time.time()
@@ -32,22 +32,22 @@ class OmegaTrace:
             "score": self.score,
             "tensor": self.tensor.to_dict() if self.tensor else None,
             "input_hash": self.input_hash,
-            "metadata": self.metadata
+            "metadata": self.metadata,
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'OmegaTrace':
+    def from_dict(cls, data: Dict[str, Any]) -> "OmegaTrace":
         """Instantiate an OmegaTrace from a dictionary representation"""
         tensor_data = data.get("tensor")
         tensor = TrustTensor.from_dict(tensor_data) if tensor_data else None
-        
+
         return cls(
             score=data.get("score", 0.0),
             tensor=tensor,
             input_hash=data.get("input_hash", ""),
             trace_id=data.get("trace_id"),
             timestamp=data.get("timestamp"),
-            metadata=data.get("metadata")
+            metadata=data.get("metadata"),
         )
 
     def verify(self) -> bool:
@@ -60,13 +60,20 @@ class OmegaTrace:
             return False
         if not self.tensor:
             return False
-        
+
         # Verify the scores in the tensor are in bounds
         t = self.tensor
-        for val in [t.consistency, t.stability, t.adversarial_robustness, t.factual_grounding, t.reasoning_soundness, t.recovery_score]:
+        for val in [
+            t.consistency,
+            t.stability,
+            t.adversarial_robustness,
+            t.factual_grounding,
+            t.reasoning_soundness,
+            t.recovery_score,
+        ]:
             if not (0.0 <= val <= 1.0):
                 return False
-                
+
         return True
 
     def __repr__(self) -> str:

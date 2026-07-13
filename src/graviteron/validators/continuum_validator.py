@@ -1,11 +1,13 @@
 import json
 import logging
-import urllib.request
 import urllib.error
-from typing import Dict, Any, Optional
+import urllib.request
+from typing import Any, Dict, Optional
+
 from ..core.omega_trace import OmegaTrace
 
 logger = logging.getLogger("graviteron.continuum_validator")
+
 
 class ContinuumValidator:
     """Client for querying the decentralized Gravit Continuum verification network"""
@@ -21,7 +23,7 @@ class ContinuumValidator:
             "score": trace.score,
             "input_hash": trace.input_hash,
             "tensor": trace.tensor.to_dict() if trace.tensor else None,
-            "metadata": trace.metadata
+            "metadata": trace.metadata,
         }
 
         try:
@@ -30,7 +32,7 @@ class ContinuumValidator:
                 url,
                 data=json.dumps(payload).encode("utf-8"),
                 headers={"Content-Type": "application/json"},
-                method="POST"
+                method="POST",
             )
             with urllib.request.urlopen(req, timeout=3.0) as response:
                 res_data = response.read()
@@ -52,11 +54,11 @@ class ContinuumValidator:
         c = trace.tensor.consistency if trace.tensor else 0.8
         s = trace.tensor.stability if trace.tensor else 0.8
         consensus_score = float(round((c * 0.6) + (s * 0.4), 4))
-        
+
         return {
             "trace_id": trace.trace_id,
             "consensus_score": consensus_score,
             "active_validators": 12,
             "verdict": "APPROVED" if consensus_score >= 0.7 else "WARN_UNSTABLE",
-            "signature": f"gqrvp_sig_mock_{trace.trace_id[:8]}"
+            "signature": f"gqrvp_sig_mock_{trace.trace_id[:8]}",
         }
