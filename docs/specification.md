@@ -1,5 +1,14 @@
 # Graviteron Specification
 
+## θ-Critical Verification Threshold
+
+Graviteron introduces an explicit confidence threshold, $\theta_{critical} = 0.731$, for epistemic verification.
+
+- Scores above the threshold are treated as approved formal verification outcomes.
+- Scores below the threshold trigger escalation to the Continuum layer for semantic review.
+
+This provides a simple and auditable bridge between formal trust metrics and semantic verification.
+
 **Version 0.1** — Initial Draft  
 **Date:** July 2026  
 **Project:** Gravit Open Network

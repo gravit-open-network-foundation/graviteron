@@ -36,6 +36,15 @@ A statement, decision, or model output with a score of **0.97 Graviteron** carri
 
 ## Technical Foundation
 
+### 3-Layer Verification Model
+Graviteron now supports an explicit epistemic verification workflow:
+
+1. L1 — factual consensus
+2. L2 — logical proof / formal verification
+3. L3 — continuum / semantic escalation
+
+A verification result below the θ-critical threshold ($0.731$) is automatically marked for continuum escalation.
+
 ### 1. Gravit Triad
 - **Identity Layer**
 - **Reputation Layer**

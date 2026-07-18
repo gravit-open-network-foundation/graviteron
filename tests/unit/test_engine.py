@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from graviteron.core.graviteron_engine import GraviteronEngine
+from graviteron.core.graviteron_engine import GraviteronEngine, VerificationResult
 from graviteron.core.omega_trace import OmegaTrace
 from graviteron.core.trust_tensor import TrustTensor
 from graviteron.validators.continuum_validator import ContinuumValidator
@@ -79,6 +79,42 @@ def test_engine_adversarial_scaling():
     tensor = TrustTensor(0.88, 0.88, 0.4, 0.88, 0.88, 0.88)
     score = engine.compute(tensor)
     assert pytest.approx(score) == 0.4
+
+
+def test_theta_critical_escalation_for_low_confidence():
+    engine = GraviteronEngine(adversarial_threshold=0.7)
+    tensor = TrustTensor(0.4, 0.4, 0.4, 0.4, 0.4, 0.4)
+
+    result = engine.evaluate_verification(tensor)
+
+    assert isinstance(result, VerificationResult)
+    assert result.theta_critical == 0.731
+    assert result.requires_continuum is True
+    assert result.verdict == "ESCALATE_TO_CONTINUUM"
+    assert result.confidence < result.theta_critical
+
+
+def test_theta_critical_passes_for_strong_confidence():
+    engine = GraviteronEngine(adversarial_threshold=0.7)
+    tensor = TrustTensor(0.9, 0.9, 0.9, 0.9, 0.9, 0.9)
+
+    result = engine.evaluate_verification(tensor)
+
+    assert result.requires_continuum is False
+    assert result.verdict == "APPROVED"
+    assert result.confidence >= result.theta_critical
+
+
+def test_compute_with_trace_includes_theta_critical_metadata():
+    engine = GraviteronEngine(adversarial_threshold=0.7)
+    tensor = TrustTensor(0.4, 0.4, 0.4, 0.4, 0.4, 0.4)
+
+    score, trace = engine.compute_with_trace(tensor=tensor, input_data="low-confidence")
+
+    assert score < 0.731
+    assert trace.metadata["theta_critical"] == 0.731
+    assert trace.metadata["requires_continuum"] is True
+    assert trace.metadata["verification_verdict"] == "ESCALATE_TO_CONTINUUM"
 
 
 def test_omega_trace_serialization():

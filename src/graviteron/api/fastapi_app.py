@@ -91,6 +91,11 @@ class ComputeResponse(BaseModel):
     input_hash: str
     tensor: Dict[str, float]
     processing_time_ms: float
+    theta_critical: float
+    requires_continuum: bool
+    verification_verdict: str
+    verification_confidence: float
+    verification_rationale: str
 
 
 class TraceResponse(BaseModel):
@@ -154,6 +159,8 @@ async def compute_score(payload: ComputeRequest):
 
         duration_ms = (time.time() - start_ts) * 1000.0
 
+        verification = engine.evaluate_verification(tensor)
+
         return ComputeResponse(
             graviteron_score=score,
             omega_trace_id=trace.trace_id,
@@ -161,6 +168,11 @@ async def compute_score(payload: ComputeRequest):
             input_hash=trace.input_hash,
             tensor=trace.tensor.to_dict(),
             processing_time_ms=duration_ms,
+            theta_critical=verification.theta_critical,
+            requires_continuum=verification.requires_continuum,
+            verification_verdict=verification.verdict,
+            verification_confidence=verification.confidence,
+            verification_rationale=verification.rationale,
         )
     except Exception as e:
         logger.error(f"Computation endpoint failed: {e}", exc_info=True)
