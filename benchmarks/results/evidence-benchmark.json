@@ -1,0 +1,246 @@
+{
+ "claims": 2000,
+ "honest_operators": {
+  "op-a": 0.95,
+  "op-b": 0.9,
+  "op-c": 0.85,
+  "op-d": 0.8,
+  "op-e": 0.7,
+  "op-f": 0.6
+ },
+ "part_a": {
+  "sybil_keys_1": {
+   "learned_operator_accuracy": {
+    "op-a": 0.957,
+    "op-b": 0.899,
+    "op-c": 0.855,
+    "op-d": 0.787,
+    "op-e": 0.714,
+    "op-f": 0.627,
+    "op-sybil": 0.515
+   },
+   "methods": {
+    "dawid_skene_posterior": {
+     "accuracy_at_0.5": 0.938,
+     "auc": 0.9824,
+     "brier": 0.0495,
+     "ece": 0.0151,
+     "false_accept_rate": 0.0681,
+     "log_loss": 0.169,
+     "n": 2000,
+     "true_accept_rate": 0.9437
+    },
+    "gevp_rule": {
+     "accuracy_at_0.5": 0.7015,
+     "auc": 0.71,
+     "brier": 0.2985,
+     "ece": 0.2985,
+     "false_accept_rate": 0.0165,
+     "log_loss": 8.2479,
+     "n": 2000,
+     "true_accept_rate": 0.4365
+    },
+    "graviteron_discounted": {
+     "accuracy_at_0.5": 0.9355,
+     "auc": 0.9812,
+     "brier": 0.1189,
+     "ece": 0.2571,
+     "false_accept_rate": 0.0733,
+     "log_loss": 0.4136,
+     "n": 2000,
+     "true_accept_rate": 0.9437
+    },
+    "graviteron_equal": {
+     "accuracy_at_0.5": 0.847,
+     "auc": 0.9642,
+     "brier": 0.1301,
+     "ece": 0.2152,
+     "false_accept_rate": 0.3013,
+     "log_loss": 0.4305,
+     "n": 2000,
+     "true_accept_rate": 0.9864
+    },
+    "graviteron_weighted": {
+     "accuracy_at_0.5": 0.9255,
+     "auc": 0.9783,
+     "brier": 0.0582,
+     "ece": 0.06,
+     "false_accept_rate": 0.0836,
+     "log_loss": 0.214,
+     "n": 2000,
+     "true_accept_rate": 0.934
+    },
+    "key_majority": {
+     "accuracy_at_0.5": 0.847,
+     "auc": 0.9593,
+     "brier": 0.1099,
+     "ece": 0.1593,
+     "false_accept_rate": 0.3013,
+     "log_loss": 0.5678,
+     "n": 2000,
+     "true_accept_rate": 0.9864
+    }
+   }
+  },
+  "sybil_keys_10": {
+   "learned_operator_accuracy": {
+    "op-a": 0.957,
+    "op-b": 0.904,
+    "op-c": 0.835,
+    "op-d": 0.816,
+    "op-e": 0.697,
+    "op-f": 0.609,
+    "op-sybil": 0.519
+   },
+   "methods": {
+    "dawid_skene_posterior": {
+     "accuracy_at_0.5": 0.926,
+     "auc": 0.9818,
+     "brier": 0.0526,
+     "ece": 0.015,
+     "false_accept_rate": 0.0843,
+     "log_loss": 0.1747,
+     "n": 2000,
+     "true_accept_rate": 0.936
+    },
+    "gevp_rule": {
+     "accuracy_at_0.5": 0.7095,
+     "auc": 0.7138,
+     "brier": 0.2905,
+     "ece": 0.2905,
+     "false_accept_rate": 0.0152,
+     "log_loss": 8.0268,
+     "n": 2000,
+     "true_accept_rate": 0.4429
+    },
+    "graviteron_discounted": {
+     "accuracy_at_0.5": 0.926,
+     "auc": 0.9805,
+     "brier": 0.1186,
+     "ece": 0.2467,
+     "false_accept_rate": 0.0833,
+     "log_loss": 0.4131,
+     "n": 2000,
+     "true_accept_rate": 0.935
+    },
+    "graviteron_equal": {
+     "accuracy_at_0.5": 0.8375,
+     "auc": 0.962,
+     "brier": 0.1317,
+     "ece": 0.2221,
+     "false_accept_rate": 0.314,
+     "log_loss": 0.4345,
+     "n": 2000,
+     "true_accept_rate": 0.9843
+    },
+    "graviteron_weighted": {
+     "accuracy_at_0.5": 0.9185,
+     "auc": 0.9778,
+     "brier": 0.0601,
+     "ece": 0.046,
+     "false_accept_rate": 0.0833,
+     "log_loss": 0.2159,
+     "n": 2000,
+     "true_accept_rate": 0.9203
+    },
+    "key_majority": {
+     "accuracy_at_0.5": 0.508,
+     "auc": 0.951,
+     "brier": 0.3099,
+     "ece": 0.3594,
+     "false_accept_rate": 1.0,
+     "log_loss": 1.0214,
+     "n": 2000,
+     "true_accept_rate": 1.0
+    }
+   }
+  },
+  "sybil_keys_50": {
+   "learned_operator_accuracy": {
+    "op-a": 0.956,
+    "op-b": 0.887,
+    "op-c": 0.841,
+    "op-d": 0.791,
+    "op-e": 0.684,
+    "op-f": 0.584,
+    "op-sybil": 0.516
+   },
+   "methods": {
+    "dawid_skene_posterior": {
+     "accuracy_at_0.5": 0.932,
+     "auc": 0.9795,
+     "brier": 0.053,
+     "ece": 0.0158,
+     "false_accept_rate": 0.0778,
+     "log_loss": 0.1827,
+     "n": 2000,
+     "true_accept_rate": 0.9416
+    },
+    "gevp_rule": {
+     "accuracy_at_0.5": 0.7055,
+     "auc": 0.7083,
+     "brier": 0.2945,
+     "ece": 0.2945,
+     "false_accept_rate": 0.0111,
+     "log_loss": 8.1373,
+     "n": 2000,
+     "true_accept_rate": 0.4277
+    },
+    "graviteron_discounted": {
+     "accuracy_at_0.5": 0.931,
+     "auc": 0.9781,
+     "brier": 0.1227,
+     "ece": 0.2576,
+     "false_accept_rate": 0.0747,
+     "log_loss": 0.4226,
+     "n": 2000,
+     "true_accept_rate": 0.9366
+    },
+    "graviteron_equal": {
+     "accuracy_at_0.5": 0.821,
+     "auc": 0.9612,
+     "brier": 0.1359,
+     "ece": 0.223,
+     "false_accept_rate": 0.3515,
+     "log_loss": 0.4435,
+     "n": 2000,
+     "true_accept_rate": 0.9901
+    },
+    "graviteron_weighted": {
+     "accuracy_at_0.5": 0.918,
+     "auc": 0.9742,
+     "brier": 0.0628,
+     "ece": 0.052,
+     "false_accept_rate": 0.0808,
+     "log_loss": 0.2275,
+     "n": 2000,
+     "true_accept_rate": 0.9168
+    },
+    "key_majority": {
+     "accuracy_at_0.5": 0.505,
+     "auc": 0.9529,
+     "brier": 0.4425,
+     "ece": 0.4606,
+     "false_accept_rate": 1.0,
+     "log_loss": 1.6397,
+     "n": 2000,
+     "true_accept_rate": 1.0
+    }
+   }
+  }
+ },
+ "part_b": {
+  "network_confidence": {
+   "accuracy_at_0.5": 0.922,
+   "auc": 0.8564,
+   "brier": 0.0774,
+   "ece": 0.0535,
+   "false_accept_rate": 0.0733,
+   "log_loss": 0.4084,
+   "n": 3000,
+   "true_accept_rate": 0.9173
+  },
+  "source": "gravit-grover theta-calibration.jsonl (3000 claims, seed 20261011, Merkle root sha256:370326aa26d4cf7e5c87fa66e9809e6eeb451a29697ee7c9117b60d5599ac25d)"
+ },
+ "seed": 20261013
+}
