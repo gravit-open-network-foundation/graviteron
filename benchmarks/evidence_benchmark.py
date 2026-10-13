@@ -28,7 +28,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
-from graviteron.evidence import dawid_skene, evidence_from_accuracy, graviteron, report, trust_from_accuracy  # noqa: E402
+from graviteron.evidence import (dawid_skene, evidence_from_accuracy, graviteron, graviteron_v3, report,  # noqa: E402
+                                 trust_from_accuracy)
 
 SEED, N_CLAIMS = 20261013, 2000
 HONEST = {"op-a": 0.95, "op-b": 0.90, "op-c": 0.85, "op-d": 0.80, "op-e": 0.70, "op-f": 0.60}
@@ -107,6 +108,26 @@ def run_part_a():
     return rows
 
 
+def run_part_c():
+    """Held out: learn operator parameters on claims 0-999 (no labels), score claims 1000-1999."""
+    rows = {}
+    for k in (1, 10, 50):
+        claims = simulate(k)
+        train, test = claims[: N_CLAIMS // 2], claims[N_CLAIMS // 2:]
+        _, params, prior = dawid_skene({c["id"]: operator_verdicts(c) for c in train})
+        weight = {op: evidence_from_accuracy(p["accuracy"]) for op, p in params.items()}
+        truth = [c["truth"] for c in test]
+        scores = {"key_majority": [], "graviteron_v0.2_weighted": [], "graviteron_v0.3": []}
+        for c in test:
+            votes = [r for _, _, r in c["records"] if r is not None]
+            scores["key_majority"].append(sum(votes) / len(votes) if votes else 0.5)
+            recs = [(op, r) for op, _, r in c["records"]]
+            scores["graviteron_v0.2_weighted"].append(graviteron(recs, evidence_weight=weight).expected)
+            scores["graviteron_v0.3"].append(graviteron_v3(recs, params, prior)["expected"])
+        rows[f"sybil_keys_{k}"] = {m: {kk: round(v, 4) for kk, v in report(sc, truth).items()} for m, sc in scores.items()}
+    return rows
+
+
 def run_part_b():
     # Copy of gravit-grover experiments/results/theta-calibration.jsonl; its Merkle root must equal the one
     # published in the grover summary and in draft-gravit-gevp-08/09, so anyone can check it is the same trace.
@@ -124,7 +145,8 @@ def run_part_b():
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    res = {"seed": SEED, "claims": N_CLAIMS, "honest_operators": HONEST, "part_a": run_part_a(), "part_b": run_part_b()}
+    res = {"seed": SEED, "claims": N_CLAIMS, "honest_operators": HONEST, "part_a": run_part_a(), "part_b": run_part_b(),
+           "part_c_held_out": run_part_c()}
     (OUT / "evidence-benchmark.json").write_text(json.dumps(res, indent=1, sort_keys=True) + "\n")
     lines = ["# Graviteron v0.2 benchmark", "", "Lower Brier, log loss and ECE are better; higher AUC is better.", ""]
     for k, row in res["part_a"].items():
@@ -139,6 +161,13 @@ def main():
     if "network_confidence" in b:
         r = b["network_confidence"]
         lines += [f"- network confidence: Brier {r['brier']}, log loss {r['log_loss']}, ECE {r['ece']}, AUC {r['auc']}, accuracy {r['accuracy_at_0.5']}"]
+    lines += ["", "## Part C, held out: parameters learned on claims 0-999 without labels, scored on claims 1000-1999", ""]
+    lines += ["| Sybil keys | Method | Brier | Log loss | ECE | AUC | Accuracy | False accept | True accept |",
+              "|---|---|---|---|---|---|---|---|---|"]
+    for k, row in res["part_c_held_out"].items():
+        for m, r in row.items():
+            lines.append(f"| {k.split('_')[-1]} | {m} | {r['brier']} | {r['log_loss']} | {r['ece']} | {r['auc']} | "
+                         f"{r['accuracy_at_0.5']} | {r['false_accept_rate']} | {r['true_accept_rate']} |")
     (OUT / "evidence-benchmark.md").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
 

@@ -22,7 +22,8 @@ g.expected, g.u      # 0.75 on two independent verdicts, with uncertainty 0.5
 
 In a reproducible benchmark with a Sybil operator using 1, 10 or 50 keys, counting keys accepts
 **every** false claim once the Sybil has 10 keys; Graviteron v0.2 accepts about 8 %, whatever the
-number of keys, with a calibration error of 0.05. Method, all results and limits:
+number of keys, with a calibration error of 0.05. v0.3 (`graviteron_v3`) combines operators as Bayes
+does and reaches a calibration error of about 0.02 on held-out data. Method, all results and limits:
 [docs/evidence-measure.md](docs/evidence-measure.md) · `python benchmarks/evidence_benchmark.py`
 
 ## Corrections (13 Oct 2026)

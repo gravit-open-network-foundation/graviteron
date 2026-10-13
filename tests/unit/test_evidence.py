@@ -87,3 +87,37 @@ def test_scores():
     assert brier([1, 0, 1, 0], truth) == 0.0
     assert auc([0.9, 0.1, 0.8, 0.2], truth) == 1.0
     assert ece([1.0, 0.0, 1.0, 0.0], truth) == 0.0
+
+
+# --- v0.3: Bayes over operators ---------------------------------------------------------------
+from graviteron.evidence import graviteron_v3, operator_verdicts  # noqa: E402
+
+P3 = {"a": {"sensitivity": 0.9, "specificity": 0.9}, "b": {"sensitivity": 0.8, "specificity": 0.8},
+      "sybil": {"sensitivity": 0.99, "specificity": 0.01}}
+
+
+def test_v3_single_verdict_gives_the_posterior():
+    g = graviteron_v3([("a", True)], P3)
+    assert math.isclose(g["expected"], 0.9)  # prior 0.5, likelihood ratio 9
+
+
+def test_v3_operators_multiply_odds():
+    g = graviteron_v3([("a", True), ("b", True)], P3)
+    assert math.isclose(g["expected"], 36 / 37)  # odds 9 * 4
+
+
+def test_v3_sybil_at_chance_and_repeated_keys_change_nothing():
+    base = graviteron_v3([("a", True), ("b", True)], P3)["expected"]
+    assert math.isclose(graviteron_v3([("a", True), ("b", True)] + [("sybil", True)] * 50, P3)["expected"], base)
+    assert math.isclose(graviteron_v3([("a", True)] * 20 + [("b", True)], P3)["expected"], base)
+
+
+def test_v3_contradiction_and_no_verdict():
+    assert graviteron_v3([("a", True), ("b", False)], P3)["expected"] < 0.9
+    g = graviteron_v3([("a", None)], P3)
+    assert g["expected"] == 0.5 and g["uncertainty"] == 1.0 and g["operators_counted"] == 0
+
+
+def test_operator_verdicts_majority_and_tie():
+    v = operator_verdicts([("x", True), ("x", True), ("x", False), ("y", True), ("y", False), ("z", None)])
+    assert v == {"x": True, "y": None, "z": None}

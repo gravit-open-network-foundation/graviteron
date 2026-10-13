@@ -242,5 +242,103 @@
   },
   "source": "gravit-grover theta-calibration.jsonl (3000 claims, seed 20261011, Merkle root sha256:370326aa26d4cf7e5c87fa66e9809e6eeb451a29697ee7c9117b60d5599ac25d)"
  },
+ "part_c_held_out": {
+  "sybil_keys_1": {
+   "graviteron_v0.2_weighted": {
+    "accuracy_at_0.5": 0.926,
+    "auc": 0.9806,
+    "brier": 0.0582,
+    "ece": 0.0632,
+    "false_accept_rate": 0.0843,
+    "log_loss": 0.2144,
+    "n": 1000,
+    "true_accept_rate": 0.9363
+   },
+   "graviteron_v0.3": {
+    "accuracy_at_0.5": 0.935,
+    "auc": 0.9832,
+    "brier": 0.0507,
+    "ece": 0.022,
+    "false_accept_rate": 0.0723,
+    "log_loss": 0.1672,
+    "n": 1000,
+    "true_accept_rate": 0.9422
+   },
+   "key_majority": {
+    "accuracy_at_0.5": 0.836,
+    "auc": 0.9562,
+    "brier": 0.1141,
+    "ece": 0.1674,
+    "false_accept_rate": 0.3133,
+    "log_loss": 0.5896,
+    "n": 1000,
+    "true_accept_rate": 0.9841
+   }
+  },
+  "sybil_keys_10": {
+   "graviteron_v0.2_weighted": {
+    "accuracy_at_0.5": 0.918,
+    "auc": 0.9803,
+    "brier": 0.058,
+    "ece": 0.0489,
+    "false_accept_rate": 0.0832,
+    "log_loss": 0.2064,
+    "n": 1000,
+    "true_accept_rate": 0.9191
+   },
+   "graviteron_v0.3": {
+    "accuracy_at_0.5": 0.931,
+    "auc": 0.985,
+    "brier": 0.0482,
+    "ece": 0.024,
+    "false_accept_rate": 0.0852,
+    "log_loss": 0.1602,
+    "n": 1000,
+    "true_accept_rate": 0.9467
+   },
+   "key_majority": {
+    "accuracy_at_0.5": 0.507,
+    "auc": 0.9449,
+    "brier": 0.3158,
+    "ece": 0.3645,
+    "false_accept_rate": 1.0,
+    "log_loss": 1.1378,
+    "n": 1000,
+    "true_accept_rate": 1.0
+   }
+  },
+  "sybil_keys_50": {
+   "graviteron_v0.2_weighted": {
+    "accuracy_at_0.5": 0.923,
+    "auc": 0.9759,
+    "brier": 0.0635,
+    "ece": 0.0655,
+    "false_accept_rate": 0.072,
+    "log_loss": 0.229,
+    "n": 1000,
+    "true_accept_rate": 0.9183
+   },
+   "graviteron_v0.3": {
+    "accuracy_at_0.5": 0.93,
+    "auc": 0.9808,
+    "brier": 0.0541,
+    "ece": 0.0218,
+    "false_accept_rate": 0.072,
+    "log_loss": 0.1772,
+    "n": 1000,
+    "true_accept_rate": 0.9319
+   },
+   "key_majority": {
+    "accuracy_at_0.5": 0.514,
+    "auc": 0.9516,
+    "brier": 0.4343,
+    "ece": 0.4517,
+    "false_accept_rate": 1.0,
+    "log_loss": 1.5983,
+    "n": 1000,
+    "true_accept_rate": 1.0
+   }
+  }
+ },
  "seed": 20261013
 }

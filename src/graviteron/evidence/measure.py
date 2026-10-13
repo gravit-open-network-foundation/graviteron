@@ -19,12 +19,13 @@ can never produce low uncertainty on its own, which is the "no aggregation
 laundering" rule of GEVP expressed as a number.
 """
 
+import math
 from collections import defaultdict
 from typing import Dict, Iterable, Mapping, Optional, Tuple
 
 from .opinion import PRIOR_WEIGHT, Opinion, averaging_fusion, cumulative_fusion, discount, from_evidence
 
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 
 
 def record_opinion(result, a: float = 0.5) -> Opinion:
@@ -85,4 +86,64 @@ def graviteron(
     return cumulative_fusion(fused, base_rate)
 
 
-__all__ = ["VERSION", "PRIOR_WEIGHT", "graviteron", "record_opinion", "trust_from_accuracy", "evidence_from_accuracy"]
+__all__ = [
+    "VERSION",
+    "PRIOR_WEIGHT",
+    "graviteron",
+    "graviteron_v3",
+    "operator_verdicts",
+    "record_opinion",
+    "trust_from_accuracy",
+    "evidence_from_accuracy",
+]
+
+
+def operator_verdicts(records: Iterable[Tuple[str, object]]) -> Dict[str, Optional[bool]]:
+    """One verdict per operator: the majority of its keys' non-null verdicts; None if none or tied."""
+    by_op: Dict[str, list] = defaultdict(list)
+    for operator, result in records:
+        if result not in (True, False, None):
+            raise ValueError("result must be True, False or None")
+        by_op[operator].append(result)
+    out: Dict[str, Optional[bool]] = {}
+    for operator, results in sorted(by_op.items()):
+        votes = [r for r in results if r is not None]
+        yes = sum(1 for r in votes if r)
+        out[operator] = None if not votes or 2 * yes == len(votes) else 2 * yes > len(votes)
+    return out
+
+
+def graviteron_v3(
+    records: Iterable[Tuple[str, object]], params: Mapping[str, Mapping[str, float]], prior: float = 0.5, cap: float = 50.0
+) -> Dict[str, float]:
+    """Graviteron v0.3: the expected value combines independent operators as Bayes does.
+
+    Each operator's verdict multiplies the odds by its likelihood ratio, from its measured
+    sensitivity and specificity (Dawid-Skene): True by sens / (1 - spec), False by (1 - sens) / spec.
+    Keys of one operator still give one verdict. Operators without parameters are ignored.
+    The uncertainty is the Subjective Logic uncertainty of the same evidence (v0.2 weighting), so
+    the result says both how likely the claim is and how much evidence stands behind it.
+    """
+    verdicts = operator_verdicts(records)
+    log_odds = math.log(prior / (1.0 - prior))
+    weights: Dict[str, float] = {}
+    for operator, v in verdicts.items():
+        p = params.get(operator)
+        if p is None or v is None:
+            continue
+        sens = min(max(p["sensitivity"], 1e-6), 1 - 1e-6)
+        spec = min(max(p["specificity"], 1e-6), 1 - 1e-6)
+        log_odds += math.log(sens / (1 - spec)) if v else math.log((1 - sens) / spec)
+        acc = prior * p["sensitivity"] + (1 - prior) * p["specificity"]
+        weights[operator] = evidence_from_accuracy(acc, cap)
+    log_odds = max(-50.0, min(50.0, log_odds))
+    expected = 1.0 / (1.0 + math.exp(-log_odds))
+    sl = graviteron([(op, v) for op, v in verdicts.items()], evidence_weight=weights or None)
+    return {
+        "expected": expected,
+        "uncertainty": sl.u,
+        "belief": sl.b,
+        "disbelief": sl.d,
+        "operators_counted": sum(1 for op, v in verdicts.items() if v is not None and op in params),
+        "method": "graviteron-0.3 (Bayes over operators, Dawid-Skene parameters)",
+    }
