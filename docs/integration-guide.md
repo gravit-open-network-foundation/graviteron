@@ -39,7 +39,7 @@ print("Omega Trace ID:", data["omega_trace_id"])
 ## Supported Protocols & Formats
 
 - **REST API**: HTTP JSON payload with standard JSON Schema.
-- **On-Chain Attestation**: ERC-8004-GT compatible payload format.
+- **On-Chain Attestation**: payload format to be defined in the GEVP agentic-finance profile (the earlier name "ERC-8004-GT" is retired).
 - **Redis Cache**: Instant key lookup of computed $\Omega$ traces.
 
 ## Best Practices
