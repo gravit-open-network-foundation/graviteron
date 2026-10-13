@@ -1,0 +1,96 @@
+{
+ "estimators_days_16_30": {
+  "fresh_mean": {
+   "hours": 56,
+   "mean_abs_error_bps": 21.3,
+   "p95_abs_error_bps": 56.7,
+   "share_of_hours_off_by_more_than_25bps": 0.304
+  },
+  "graviteron": {
+   "hours": 56,
+   "mean_abs_error_bps": 19.8,
+   "p95_abs_error_bps": 56.7,
+   "share_of_hours_off_by_more_than_25bps": 0.268
+  },
+  "last_price_mean": {
+   "hours": 56,
+   "mean_abs_error_bps": 36.6,
+   "p95_abs_error_bps": 106.4,
+   "share_of_hours_off_by_more_than_25bps": 0.375
+  },
+  "last_price_median": {
+   "hours": 56,
+   "mean_abs_error_bps": 46.3,
+   "p95_abs_error_bps": 128.6,
+   "share_of_hours_off_by_more_than_25bps": 0.375
+  }
+ },
+ "evidence_units_per_verdict": {
+  "base-EURAU/EURC0.01%": 10.0,
+  "base-EURAU/USDC0.05%": 0.0,
+  "raydium-sol-EURAU/USDC": 0.75,
+  "raydium-sol-EURAU/USDT": 0.0,
+  "uniswap-eth-EURAU/USDC": 28.0,
+  "uniswap-eth-EURAU/USDT": 0.0
+ },
+ "graviteron_peg_opinion_days_16_30": {
+  "hours": 56,
+  "median_expected": 0.9299,
+  "median_uncertainty": 0.0667,
+  "share_expected_at_least_0.5": 0.929
+ },
+ "reference_vs_ecb": {
+  "days": 22,
+  "max_abs_bps": 43.7,
+  "mean_abs_bps": 9.9
+ },
+ "tolerance_bps": 25.0,
+ "venues": {
+  "base-EURAU/EURC0.01%": {
+   "accuracy_days_1_15": 0.917,
+   "hours_traded": 16,
+   "median_deviation_bps": 1.3,
+   "share_of_hours_traded": 0.022,
+   "share_within_25bps": 0.938
+  },
+  "base-EURAU/USDC0.05%": {
+   "accuracy_days_1_15": 0.401,
+   "hours_traded": 205,
+   "median_deviation_bps": -17.2,
+   "share_of_hours_traded": 0.285,
+   "share_within_25bps": 0.41
+  },
+  "raydium-sol-EURAU/USDC": {
+   "accuracy_days_1_15": 0.636,
+   "hours_traded": 69,
+   "median_deviation_bps": 1.4,
+   "share_of_hours_traded": 0.096,
+   "share_within_25bps": 0.58
+  },
+  "raydium-sol-EURAU/USDT": {
+   "accuracy_days_1_15": null,
+   "hours_traded": 0,
+   "median_deviation_bps": null,
+   "share_of_hours_traded": 0.0,
+   "share_within_25bps": null
+  },
+  "uniswap-eth-EURAU/USDC": {
+   "accuracy_days_1_15": 0.967,
+   "hours_traded": 90,
+   "median_deviation_bps": -0.5,
+   "share_of_hours_traded": 0.125,
+   "share_within_25bps": 0.956
+  },
+  "uniswap-eth-EURAU/USDT": {
+   "accuracy_days_1_15": null,
+   "hours_traded": 0,
+   "median_deviation_bps": null,
+   "share_of_hours_traded": 0.0,
+   "share_within_25bps": null
+  }
+ },
+ "window": [
+  "2026-09-13T18:00:00+00:00",
+  "2026-10-13T18:00:00+00:00"
+ ]
+}

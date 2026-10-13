@@ -40,4 +40,5 @@ jobs:
     - name: Evidence benchmark is reproducible (results must match byte for byte)
       run: |
         python benchmarks/evidence_benchmark.py > /dev/null
-        git diff --exit-code benchmarks/results/
+        python benchmarks/real_eurau/analyse.py > /dev/null
+        git diff --exit-code benchmarks/
