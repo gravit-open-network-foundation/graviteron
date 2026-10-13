@@ -1,5 +1,9 @@
 # Graviteron Mathematics
 
+> **Correction (13 Oct 2026).** This page describes v0.1. The Trust Tensor components have no defined
+> measurement procedure and the calibration claim in Section 4 was not measured. The evidence-based
+> measure of v0.2, with measured calibration, is described in [evidence-measure.md](evidence-measure.md).
+
 ## 1. Trust Tensor
 
 The foundation of Graviteron is the **6-dimensional Trust Tensor** $T$:

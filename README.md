@@ -1,12 +1,45 @@
 # Graviteron — The Fundamental Unit of Verifiable Trust
 
-[![CI/CD](https://github.com/gravit-open-network/graviteron/actions/workflows/ci.yml/badge.svg)](https://github.com/gravit-open-network/graviteron/actions)
-[![PyPI version](https://badge.fury.io/py/graviteron.svg)](https://badge.fury.io/py/graviteron)
+[![CI/CD](https://github.com/gravit-open-network-foundation/graviteron/actions/workflows/ci.yml/badge.svg)](https://github.com/gravit-open-network-foundation/graviteron/actions)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](./LICENSE)
 
 **Graviteron** (GU) is the first standardized, computable unit of verifiable trust in the age of autonomous AI agents.
 
 Just as the *meter* measures length, the *kilogram* measures mass, and the *second* measures time — **Graviteron** measures **epistemic reliability** — the verifiable weight of truth.
+
+## v0.2: Graviteron computed from evidence (13 Oct 2026)
+
+Graviteron v0.2 is computed from the **signed evidence records** of the
+[Gravit Verifier](https://github.com/gravit-open-network-foundation/verifier), with
+Subjective Logic (belief, disbelief, uncertainty) and operator weights **learned from data**
+(Dawid-Skene), and it is checked for **calibration**: a score of 0.9 should be right about 90 % of the time.
+
+```python
+from graviteron.evidence import graviteron, dawid_skene, evidence_from_accuracy
+g = graviteron([("operator-a", True), ("operator-b", True), ("operator-c", None)])
+g.expected, g.u      # 0.75 on two independent verdicts, with uncertainty 0.5
+```
+
+In a reproducible benchmark with a Sybil operator using 1, 10 or 50 keys, counting keys accepts
+**every** false claim once the Sybil has 10 keys; Graviteron v0.2 accepts about 8 %, whatever the
+number of keys, with a calibration error of 0.05. Method, all results and limits:
+[docs/evidence-measure.md](docs/evidence-measure.md) · `python benchmarks/evidence_benchmark.py`
+
+## Corrections (13 Oct 2026)
+
+The text below is kept as it was; these statements in it are corrected:
+
+* **θ-critical 0.731.** The threshold came from a calibration that could not be reproduced and
+  is no longer recommended (draft-gravit-gevp-08). The reproduced calibration shows the same
+  rates for every θ between 0.11 and 0.78.
+* **Trust Tensor.** Its six components have no defined measurement procedure, and the weights of 1/6
+  are not derived from data. It remains in the code for compatibility (v0.1) but is not the basis of
+  the v0.2 measure.
+* **"Calibrated to match human evaluator audit limits"** (docs/mathematics.md) was not supported
+  by any measurement. Calibration is now measured; see the benchmark.
+* **Package.** Graviteron is not published on PyPI; the former PyPI badge was removed.
+  Install from this repository: `pip install -e .`
+
 
 ---
 
