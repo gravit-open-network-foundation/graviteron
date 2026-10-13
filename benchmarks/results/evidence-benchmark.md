@@ -45,3 +45,17 @@ Learned operator accuracy (true values: a .95, b .90, c .85, d .80, e .70, f .60
 
 - gravit-grover theta-calibration.jsonl (3000 claims, seed 20261011, Merkle root sha256:370326aa26d4cf7e5c87fa66e9809e6eeb451a29697ee7c9117b60d5599ac25d)
 - network confidence: Brier 0.0774, log loss 0.4084, ECE 0.0535, AUC 0.8564, accuracy 0.922
+
+## Part C, held out: parameters learned on claims 0-999 without labels, scored on claims 1000-1999
+
+| Sybil keys | Method | Brier | Log loss | ECE | AUC | Accuracy | False accept | True accept |
+|---|---|---|---|---|---|---|---|---|
+| 1 | key_majority | 0.1141 | 0.5896 | 0.1674 | 0.9562 | 0.836 | 0.3133 | 0.9841 |
+| 1 | graviteron_v0.2_weighted | 0.0582 | 0.2144 | 0.0632 | 0.9806 | 0.926 | 0.0843 | 0.9363 |
+| 1 | graviteron_v0.3 | 0.0507 | 0.1672 | 0.022 | 0.9832 | 0.935 | 0.0723 | 0.9422 |
+| 10 | key_majority | 0.3158 | 1.1378 | 0.3645 | 0.9449 | 0.507 | 1.0 | 1.0 |
+| 10 | graviteron_v0.2_weighted | 0.058 | 0.2064 | 0.0489 | 0.9803 | 0.918 | 0.0832 | 0.9191 |
+| 10 | graviteron_v0.3 | 0.0482 | 0.1602 | 0.024 | 0.985 | 0.931 | 0.0852 | 0.9467 |
+| 50 | key_majority | 0.4343 | 1.5983 | 0.4517 | 0.9516 | 0.514 | 1.0 | 1.0 |
+| 50 | graviteron_v0.2_weighted | 0.0635 | 0.229 | 0.0655 | 0.9759 | 0.923 | 0.072 | 0.9183 |
+| 50 | graviteron_v0.3 | 0.0541 | 0.1772 | 0.0218 | 0.9808 | 0.93 | 0.072 | 0.9319 |

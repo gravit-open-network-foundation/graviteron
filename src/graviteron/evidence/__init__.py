@@ -2,7 +2,15 @@
 with operator reliability learned from data (Dawid-Skene) and checked by calibration."""
 
 from .calibration import auc, brier, ece, log_loss, reliability_bins, report
-from .measure import VERSION, evidence_from_accuracy, graviteron, record_opinion, trust_from_accuracy
+from .measure import (
+    VERSION,
+    evidence_from_accuracy,
+    graviteron,
+    graviteron_v3,
+    operator_verdicts,
+    record_opinion,
+    trust_from_accuracy,
+)
 from .opinion import Opinion, averaging_fusion, cumulative_fusion, discount, from_evidence
 from .reliability import dawid_skene
 
@@ -14,6 +22,8 @@ __all__ = [
     "averaging_fusion",
     "discount",
     "graviteron",
+    "graviteron_v3",
+    "operator_verdicts",
     "record_opinion",
     "trust_from_accuracy",
     "evidence_from_accuracy",

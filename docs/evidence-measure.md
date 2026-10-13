@@ -1,4 +1,4 @@
-# Graviteron v0.2: a measure of trust computed from evidence
+# Graviteron: a measure of trust computed from evidence (v0.2 and v0.3)
 
 ## What it measures
 
@@ -56,6 +56,28 @@ What this shows:
 (gravit-grover, seed 20261011, Merkle root
 `sha256:370326aa26d4cf7e5c87fa66e9809e6eeb451a29697ee7c9117b60d5599ac25d`, the same as published
 in draft-gravit-gevp-08 and -09): network confidence has Brier 0.077, ECE 0.054, AUC 0.856.
+
+## v0.3: the expected value combined as Bayes does
+
+v0.2 adds evidence linearly, which makes it too cautious when several good operators agree.
+Independent evidence multiplies odds. In v0.3 (`graviteron_v3`) each operator's verdict multiplies the
+odds of the claim by its likelihood ratio, from its measured sensitivity and specificity:
+`sens / (1 − spec)` for True, `(1 − sens) / spec` for False. Keys of one operator still give one
+verdict, and an operator at chance has a ratio of 1, so it changes nothing. The uncertainty is the
+Subjective Logic uncertainty of the same evidence, so the result still says how much evidence
+stands behind the number.
+
+**Part C: held out.** Parameters learned on claims 0 to 999 without labels; all methods scored on
+claims 1000 to 1999, which the learning never saw.
+
+| Method | K = 1: Brier / ECE / false accept | K = 10 | K = 50 |
+|---|---|---|---|
+| Majority of keys | 0.114 / 0.167 / 31 % | 0.316 / 0.365 / **100 %** | 0.434 / 0.452 / **100 %** |
+| Graviteron v0.2 (weighted) | 0.058 / 0.063 / 8.4 % | 0.058 / 0.049 / 8.3 % | 0.064 / 0.066 / 7.2 % |
+| **Graviteron v0.3** | **0.051 / 0.022 / 7.2 %** | **0.048 / 0.024 / 8.5 %** | **0.054 / 0.022 / 7.2 %** |
+
+On data it was not trained on, v0.3 has a calibration error two to three times lower than v0.2 and
+close to the in-sample Dawid-Skene reference of Part A (0.015), whatever the number of Sybil keys.
 
 ## Limits
 
