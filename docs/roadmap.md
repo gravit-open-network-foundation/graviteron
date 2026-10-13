@@ -15,7 +15,7 @@
 ## Phase 2 (Q1-Q2 2027) — Beta
 - [ ] Decentralized validation network (Gravit Continuum consensus nodes)
 - [ ] Native high-performance SDKs (Rust, Go, TypeScript)
-- [ ] On-chain Graviteron registry (ERC-8004-GT implementation)
+- [ ] On-chain Graviteron registry (anchoring GEVP decision records; formerly planned as "ERC-8004-GT", a retired name)
 - [ ] Formal mathematical verification proofs
 
 ## Phase 3 (2027+) — Standardization
