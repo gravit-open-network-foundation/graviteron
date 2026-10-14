@@ -41,4 +41,5 @@ jobs:
       run: |
         python benchmarks/evidence_benchmark.py > /dev/null
         python benchmarks/real_eurau/analyse.py > /dev/null
+        python benchmarks/real_chfau/analyse.py > /dev/null
         git diff --exit-code benchmarks/
