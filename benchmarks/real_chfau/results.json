@@ -1,0 +1,26 @@
+{
+ "addresses_moving": 1848,
+ "burned": 12801000.0,
+ "burns": 7,
+ "holders_at_fetch": 2481,
+ "median_moves_per_day": 62.5,
+ "minted": 12850929.0,
+ "mints": 20,
+ "moved_between_holders": 115670707.97,
+ "moves": 3243,
+ "net_issuance": 49929.0,
+ "source": "eth.blockscout.com",
+ "supply_at_fetch": 38963792.921656,
+ "top5_share_of_volume_pct": [
+  32.9,
+  26.9,
+  9.9,
+  5.6,
+  5.3
+ ],
+ "transfers": 3270,
+ "window": [
+  "2026-09-13T18:00:00+00:00",
+  "2026-10-13T18:00:00+00:00"
+ ]
+}
