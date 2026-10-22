@@ -13,6 +13,7 @@ from .measure import (
 )
 from .opinion import Opinion, averaging_fusion, cumulative_fusion, discount, from_evidence
 from .reliability import dawid_skene
+from .unit import GraviteronReading, band, reading
 
 __all__ = [
     "VERSION",
@@ -28,6 +29,9 @@ __all__ = [
     "trust_from_accuracy",
     "evidence_from_accuracy",
     "dawid_skene",
+    "reading",
+    "band",
+    "GraviteronReading",
     "brier",
     "log_loss",
     "ece",
