@@ -51,6 +51,7 @@ def decay(weight: float, age_seconds: float, half_life_seconds: Optional[float])
 
 # --- Beta quantile (regularized incomplete beta, Lentz continued fraction), no external deps ---
 
+
 def _betacf(a: float, b: float, x: float) -> float:
     tiny, qab, qap, qam = 1e-300, a + b, a + 1.0, a - 1.0
     c, d = 1.0, 1.0 - qab * x / qap
@@ -105,21 +106,27 @@ def _db(p: float) -> float:
 
 @dataclass
 class GraviteronReading:
-    value: float                          # G in decibans, relative to the prior
-    low: float                            # lower end of the interval, decibans
-    high: float                           # upper end
-    band: str                             # verbal band (Jeffreys)
-    contributions: Dict[str, float]       # operator -> decibans after decay
-    independent_operators: int            # operators that gave a verdict
-    contradicted: bool                    # at least one counted operator signed "false"
+    value: float  # G in decibans, relative to the prior
+    low: float  # lower end of the interval, decibans
+    high: float  # upper end
+    band: str  # verbal band (Jeffreys)
+    contributions: Dict[str, float]  # operator -> decibans after decay
+    independent_operators: int  # operators that gave a verdict
+    contradicted: bool  # at least one counted operator signed "false"
     interval: float = 0.9
     notes: List[str] = field(default_factory=list)
 
     def as_dict(self) -> dict:
-        return {"G_dB": round(self.value, 1), "interval_dB": [round(self.low, 1), round(self.high, 1)],
-                "interval": self.interval, "band": self.band, "operators": self.independent_operators,
-                "contradicted": self.contradicted, "contributions_dB": {k: round(v, 1) for k, v in self.contributions.items()},
-                "notes": self.notes}
+        return {
+            "G_dB": round(self.value, 1),
+            "interval_dB": [round(self.low, 1), round(self.high, 1)],
+            "interval": self.interval,
+            "band": self.band,
+            "operators": self.independent_operators,
+            "contradicted": self.contradicted,
+            "contributions_dB": {k: round(v, 1) for k, v in self.contributions.items()},
+            "notes": self.notes,
+        }
 
 
 def reading(
@@ -157,5 +164,6 @@ def reading(
     if contradicted:
         notes.append("signed contradiction present: reported, never averaged away")
     words = ("contested: " + band(g)) if contradicted else band(g)
-    return GraviteronReading(g, g + spread_lo, g + spread_hi, words, contrib,
-                             sum(1 for op in contrib), contradicted, interval, notes)
+    return GraviteronReading(
+        g, g + spread_lo, g + spread_hi, words, contrib, sum(1 for op in contrib), contradicted, interval, notes
+    )

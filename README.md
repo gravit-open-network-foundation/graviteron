@@ -3,9 +3,65 @@
 [![CI/CD](https://github.com/gravit-open-network-foundation/graviteron/actions/workflows/ci.yml/badge.svg)](https://github.com/gravit-open-network-foundation/graviteron/actions)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](./LICENSE)
 
-**Graviteron** (GU) is the first standardized, computable unit of verifiable trust in the age of autonomous AI agents.
+**Graviteron** is a proposed unit of verifiable trust: the **weight of evidence** that signed, independent checks give a claim, in **decibans**.
 
-Just as the *meter* measures length, the *kilogram* measures mass, and the *second* measures time — **Graviteron** measures **epistemic reliability** — the verifiable weight of truth.
+## Definition (v0.4, proposal)
+
+    G = 10 · log10(posterior odds) − 10 · log10(prior odds)
+
+Each independent operator adds 10 · log10 of its likelihood ratio, computed from its measured
+sensitivity and specificity (Dawid-Skene): a confirmation adds 10 · log10(sens / (1 − spec)),
+a signed "false" adds 10 · log10((1 − sens) / spec). The unit goes back to Turing and Good's
+weight of evidence. Full text: [docs/graviteron-unit.md](docs/graviteron-unit.md) ·
+code: `graviteron.evidence.unit.reading`.
+
+| # | Property | Rule |
+|---|---|---|
+| 1 | Zero point | 0 G = no evidence either way |
+| 2 | Sign | positive supports the claim, negative contradicts it |
+| 3 | Additive | independent operators add |
+| 4 | Sybil invariant | all keys of one operator count once |
+| 5 | Dynamic | a check loses weight with a half life unless it is renewed |
+| 6 | No silent evidence | no verdict, or no measured reliability, counts nothing and is noted |
+| 7 | Never a bare point | always an interval, narrower with more independent operators |
+| 8 | Contradiction visible | any signed "false" is flagged and the reading says "contested" |
+
+People read a verbal band on Jeffreys' scale (inconclusive, substantial, strong, very strong,
+decisive), the number of independent operators and the contradiction flag, not a bare number.
+
+| Situation (operators 90 %/90 % and 80 %/95 %) | G (dB) | 90 % interval | Band |
+|---|---|---|---|
+| one operator confirms | 9.5 | −0.3 to 22.4 | substantial support |
+| three independent operators confirm | 31.1 | 23.5 to 44.0 | decisive support |
+| two confirm, one signs "false" | 12.3 | 4.0 to 22.5 | contested: strong support |
+| three confirm, 60 days old, half life 30 days | 7.8 | −2.0 to 20.6 | substantial support |
+
+## Implement it yourself: test vectors
+
+A unit is only a unit if anyone can compute it and get the same number. The file
+[vectors/graviteron-unit-v0.4.json](vectors/graviteron-unit-v0.4.json) holds 21 cases
+(input records, operator parameters, ages, half life → expected G, interval, band, flags, notes)
+with stated tolerances. Write your own implementation in any language and check it against
+the vectors; the reference implementation passes them in CI (`tests/unit/test_vectors.py`).
+An independent second implementation is the next step toward a standard; please tell us
+about yours in an issue.
+
+**Honest limits.** The interval is provisional (it does not yet carry the uncertainty of the
+operators' measured accuracy); the bands are a communication scale, not a decision rule;
+calibration on live data is the next measurement.
+
+---
+
+## History (kept as written)
+
+The sections below are the earlier versions of this page. Nothing is erased; corrections are listed
+under "Corrections (13 Oct 2026)".
+
+> **Graviteron** (GU) is the first standardized, computable unit of verifiable trust in the age of autonomous AI agents.
+>
+> Just as the *meter* measures length, the *kilogram* measures mass, and the *second* measures time — **Graviteron** measures **epistemic reliability** — the verifiable weight of truth.
+
+*Correction (1 Nov 2026): "first standardized" was a goal, not a fact. The Graviteron is a proposal; it is not a standard of any standards body.*
 
 ## v0.2: Graviteron computed from evidence (13 Oct 2026)
 
