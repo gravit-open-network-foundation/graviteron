@@ -1,0 +1,1193 @@
+{
+  "name": "Graviteron unit test vectors",
+  "version": "0.4.0",
+  "definition": "docs/graviteron-unit.md",
+  "tolerance_dB": {
+    "G_dB": 1e-06,
+    "contributions_dB": 1e-06,
+    "interval_dB": 0.0001
+  },
+  "notes": "Values are rounded to 6 decimals. The interval comes from a Beta quantile found by bisection, hence the wider tolerance. Records are [operator, true|false|null]; keys of one operator are listed under the same operator name.",
+  "vectors": [
+    {
+      "id": "zero-no-evidence",
+      "description": "No records: 0 G, inconclusive.",
+      "input": {
+        "records": [],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 0,
+        "interval_dB": [
+          -12.787536,
+          12.787536
+        ],
+        "band": "inconclusive",
+        "independent_operators": 0,
+        "contradicted": false,
+        "contributions_dB": {},
+        "notes": []
+      }
+    },
+    {
+      "id": "one-confirms",
+      "description": "One 90/90 operator confirms (docs example 1).",
+      "input": {
+        "records": [
+          [
+            "a",
+            true
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 9.542425,
+        "interval_dB": [
+          -0.320444,
+          22.366542
+        ],
+        "band": "substantial support",
+        "independent_operators": 1,
+        "contradicted": false,
+        "contributions_dB": {
+          "a": 9.542425
+        },
+        "notes": []
+      }
+    },
+    {
+      "id": "one-contradicts",
+      "description": "One 90/90 operator signs false.",
+      "input": {
+        "records": [
+          [
+            "a",
+            false
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": -9.542425,
+        "interval_dB": [
+          -22.366542,
+          0.320444
+        ],
+        "band": "contested: substantial contradiction",
+        "independent_operators": 1,
+        "contradicted": true,
+        "contributions_dB": {
+          "a": -9.542425
+        },
+        "notes": [
+          "signed contradiction present: reported, never averaged away"
+        ]
+      }
+    },
+    {
+      "id": "two-confirm-additive",
+      "description": "Two independent operators add.",
+      "input": {
+        "records": [
+          [
+            "a",
+            true
+          ],
+          [
+            "b",
+            true
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 19.08485,
+        "interval_dB": [
+          10.602395,
+          31.927518
+        ],
+        "band": "very strong support",
+        "independent_operators": 2,
+        "contradicted": false,
+        "contributions_dB": {
+          "a": 9.542425,
+          "b": 9.542425
+        },
+        "notes": []
+      }
+    },
+    {
+      "id": "three-confirm",
+      "description": "Three operators confirm (docs example 2).",
+      "input": {
+        "records": [
+          [
+            "a",
+            true
+          ],
+          [
+            "b",
+            true
+          ],
+          [
+            "c",
+            true
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 31.12605,
+        "interval_dB": [
+          23.543532,
+          43.98141
+        ],
+        "band": "decisive support",
+        "independent_operators": 3,
+        "contradicted": false,
+        "contributions_dB": {
+          "a": 9.542425,
+          "b": 9.542425,
+          "c": 12.0412
+        },
+        "notes": []
+      }
+    },
+    {
+      "id": "contested",
+      "description": "Two confirm, one signs false (docs example 3).",
+      "input": {
+        "records": [
+          [
+            "a",
+            true
+          ],
+          [
+            "b",
+            true
+          ],
+          [
+            "c",
+            false
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 12.317914,
+        "interval_dB": [
+          4.01232,
+          22.497503
+        ],
+        "band": "contested: strong support",
+        "independent_operators": 3,
+        "contradicted": true,
+        "contributions_dB": {
+          "a": 9.542425,
+          "b": 9.542425,
+          "c": -6.766936
+        },
+        "notes": [
+          "signed contradiction present: reported, never averaged away"
+        ]
+      }
+    },
+    {
+      "id": "decayed-60d-hl30d",
+      "description": "Three confirm, all 60 days old, half life 30 days (docs example 4).",
+      "input": {
+        "records": [
+          [
+            "a",
+            true
+          ],
+          [
+            "b",
+            true
+          ],
+          [
+            "c",
+            true
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": {
+          "a": 5184000.0,
+          "b": 5184000.0,
+          "c": 5184000.0
+        },
+        "half_life_seconds": 2592000.0,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 7.781513,
+        "interval_dB": [
+          -2.045616,
+          20.606098
+        ],
+        "band": "substantial support",
+        "independent_operators": 3,
+        "contradicted": false,
+        "contributions_dB": {
+          "a": 2.385606,
+          "b": 2.385606,
+          "c": 3.0103
+        },
+        "notes": []
+      }
+    },
+    {
+      "id": "decay-one-half-life",
+      "description": "One check exactly one half life old counts half.",
+      "input": {
+        "records": [
+          [
+            "a",
+            true
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": {
+          "a": 2592000.0
+        },
+        "half_life_seconds": 2592000.0,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 4.771213,
+        "interval_dB": [
+          -6.01692,
+          17.583408
+        ],
+        "band": "inconclusive",
+        "independent_operators": 1,
+        "contradicted": false,
+        "contributions_dB": {
+          "a": 4.771213
+        },
+        "notes": []
+      }
+    },
+    {
+      "id": "renewed-check",
+      "description": "Age 0 with a half life: full weight (renewal restores it).",
+      "input": {
+        "records": [
+          [
+            "a",
+            true
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": {
+          "a": 0
+        },
+        "half_life_seconds": 2592000.0,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 9.542425,
+        "interval_dB": [
+          -0.320444,
+          22.366542
+        ],
+        "band": "substantial support",
+        "independent_operators": 1,
+        "contradicted": false,
+        "contributions_dB": {
+          "a": 9.542425
+        },
+        "notes": []
+      }
+    },
+    {
+      "id": "sybil-50-keys",
+      "description": "50 keys of one operator count once.",
+      "input": {
+        "records": [
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 9.542425,
+        "interval_dB": [
+          -0.320444,
+          22.366542
+        ],
+        "band": "substantial support",
+        "independent_operators": 1,
+        "contradicted": false,
+        "contributions_dB": {
+          "a": 9.542425
+        },
+        "notes": []
+      }
+    },
+    {
+      "id": "operator-majority",
+      "description": "One operator, keys 2 true 1 false: its majority verdict is true.",
+      "input": {
+        "records": [
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            false
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 9.542425,
+        "interval_dB": [
+          -0.320444,
+          22.366542
+        ],
+        "band": "substantial support",
+        "independent_operators": 1,
+        "contradicted": false,
+        "contributions_dB": {
+          "a": 9.542425
+        },
+        "notes": []
+      }
+    },
+    {
+      "id": "operator-tie",
+      "description": "One operator, keys tied 1 true 1 false: no verdict, counts nothing.",
+      "input": {
+        "records": [
+          [
+            "a",
+            true
+          ],
+          [
+            "a",
+            false
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 0,
+        "interval_dB": [
+          -12.787536,
+          12.787536
+        ],
+        "band": "inconclusive",
+        "independent_operators": 0,
+        "contradicted": false,
+        "contributions_dB": {},
+        "notes": [
+          "a: no verdict, counts nothing"
+        ]
+      }
+    },
+    {
+      "id": "no-verdict",
+      "description": "Null verdict counts nothing and is noted.",
+      "input": {
+        "records": [
+          [
+            "a",
+            null
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 0,
+        "interval_dB": [
+          -12.787536,
+          12.787536
+        ],
+        "band": "inconclusive",
+        "independent_operators": 0,
+        "contradicted": false,
+        "contributions_dB": {},
+        "notes": [
+          "a: no verdict, counts nothing"
+        ]
+      }
+    },
+    {
+      "id": "unknown-operator",
+      "description": "Operator without measured reliability counts nothing and is noted.",
+      "input": {
+        "records": [
+          [
+            "ghost",
+            true
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 0,
+        "interval_dB": [
+          -12.787536,
+          12.787536
+        ],
+        "band": "inconclusive",
+        "independent_operators": 0,
+        "contradicted": false,
+        "contributions_dB": {},
+        "notes": [
+          "ghost: no measured reliability, counts nothing"
+        ]
+      }
+    },
+    {
+      "id": "asymmetric-confirms",
+      "description": "80/95 operator confirms: LR = 0.8 / 0.05.",
+      "input": {
+        "records": [
+          [
+            "c",
+            true
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 12.0412,
+        "interval_dB": [
+          2.478948,
+          24.869273
+        ],
+        "band": "strong support",
+        "independent_operators": 1,
+        "contradicted": false,
+        "contributions_dB": {
+          "c": 12.0412
+        },
+        "notes": []
+      }
+    },
+    {
+      "id": "asymmetric-contradicts",
+      "description": "80/95 operator signs false: LR = 0.2 / 0.95.",
+      "input": {
+        "records": [
+          [
+            "c",
+            false
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": -6.766936,
+        "interval_dB": [
+          -19.585038,
+          3.559198
+        ],
+        "band": "contested: substantial contradiction",
+        "independent_operators": 1,
+        "contradicted": true,
+        "contributions_dB": {
+          "c": -6.766936
+        },
+        "notes": [
+          "signed contradiction present: reported, never averaged away"
+        ]
+      }
+    },
+    {
+      "id": "weak-operator",
+      "description": "60/60 operator confirms: inconclusive.",
+      "input": {
+        "records": [
+          [
+            "w",
+            true
+          ]
+        ],
+        "params": {
+          "w": {
+            "sensitivity": 0.6,
+            "specificity": 0.6
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 1.760913,
+        "interval_dB": [
+          -10.07467,
+          14.560021
+        ],
+        "band": "inconclusive",
+        "independent_operators": 1,
+        "contradicted": false,
+        "contributions_dB": {
+          "w": 1.760913
+        },
+        "notes": []
+      }
+    },
+    {
+      "id": "useless-operator",
+      "description": "50/50 operator: likelihood ratio 1, 0 G.",
+      "input": {
+        "records": [
+          [
+            "u",
+            true
+          ]
+        ],
+        "params": {
+          "u": {
+            "sensitivity": 0.5,
+            "specificity": 0.5
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 0.0,
+        "interval_dB": [
+          -12.787536,
+          12.787536
+        ],
+        "band": "inconclusive",
+        "independent_operators": 1,
+        "contradicted": false,
+        "contributions_dB": {
+          "u": 0.0
+        },
+        "notes": []
+      }
+    },
+    {
+      "id": "five-confirm-decisive",
+      "description": "Five 90/90 operators confirm.",
+      "input": {
+        "records": [
+          [
+            "a",
+            true
+          ],
+          [
+            "b",
+            true
+          ],
+          [
+            "d",
+            true
+          ],
+          [
+            "e",
+            true
+          ],
+          [
+            "f",
+            true
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "d": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "e": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "f": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 47.712125,
+        "interval_dB": [
+          40.90668,
+          60.578906
+        ],
+        "band": "decisive support",
+        "independent_operators": 5,
+        "contradicted": false,
+        "contributions_dB": {
+          "a": 9.542425,
+          "b": 9.542425,
+          "d": 9.542425,
+          "e": 9.542425,
+          "f": 9.542425
+        },
+        "notes": []
+      }
+    },
+    {
+      "id": "two-contradict",
+      "description": "Two operators sign false: strong contradiction, contested.",
+      "input": {
+        "records": [
+          [
+            "a",
+            false
+          ],
+          [
+            "b",
+            false
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": null,
+        "half_life_seconds": null,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": -19.08485,
+        "interval_dB": [
+          -31.927518,
+          -10.602395
+        ],
+        "band": "contested: very strong contradiction",
+        "independent_operators": 2,
+        "contradicted": true,
+        "contributions_dB": {
+          "a": -9.542425,
+          "b": -9.542425
+        },
+        "notes": [
+          "signed contradiction present: reported, never averaged away"
+        ]
+      }
+    },
+    {
+      "id": "mixed-ages",
+      "description": "Two confirm, one fresh and one 90 days old, half life 30 days.",
+      "input": {
+        "records": [
+          [
+            "a",
+            true
+          ],
+          [
+            "b",
+            true
+          ]
+        ],
+        "params": {
+          "a": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "b": {
+            "sensitivity": 0.9,
+            "specificity": 0.9
+          },
+          "c": {
+            "sensitivity": 0.8,
+            "specificity": 0.95
+          }
+        },
+        "ages_seconds": {
+          "a": 0,
+          "b": 7776000.0
+        },
+        "half_life_seconds": 2592000.0,
+        "interval": 0.9
+      },
+      "expected": {
+        "G_dB": 10.735228,
+        "interval_dB": [
+          1.163553,
+          23.563177
+        ],
+        "band": "strong support",
+        "independent_operators": 2,
+        "contradicted": false,
+        "contributions_dB": {
+          "a": 9.542425,
+          "b": 1.192803
+        },
+        "notes": []
+      }
+    }
+  ]
+}

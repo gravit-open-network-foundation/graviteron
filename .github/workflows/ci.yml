@@ -43,3 +43,8 @@ jobs:
         python benchmarks/real_eurau/analyse.py > /dev/null
         python benchmarks/real_chfau/analyse.py > /dev/null
         git diff --exit-code benchmarks/
+
+    - name: Unit test vectors are reproducible (byte for byte)
+      run: |
+        python vectors/generate.py > /dev/null
+        git diff --exit-code vectors/
